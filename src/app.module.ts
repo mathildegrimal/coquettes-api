@@ -1,9 +1,11 @@
+import { HttpModule } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 // import { CommandModule } from './command/command.module';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { ConfigModule } from '@nestjs/config';
 // import { ClientModule } from './client/client.module';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -24,8 +26,9 @@ import { AppController } from './app.controller';
     // }),
     // CommandModule,
     // ClientModule,
+    HttpModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [AppService],
 })
 export class AppModule {}

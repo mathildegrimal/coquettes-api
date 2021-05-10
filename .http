@@ -21,17 +21,16 @@ content-type: application/json
 
 ###
 
-POST http://localhost:3000/github HTTP/1.1
+POST http://localhost:3000/test HTTP/1.1
 content-type: application/json
 
 {
-    "message":"coucou"
-}
-
+        "content": "encore un test"
+      }
 
 ###
 POST https://coquettes.herokuapp.com/github HTTP/1.1
-content-type: text/json
+content-type: application/json
 
 {
     "message":"coucou"
