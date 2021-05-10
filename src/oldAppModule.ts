@@ -10,12 +10,11 @@ import { AppController } from './app.controller';
     ConfigModule.forRoot({ envFilePath: '.env' }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'ec2-54-195-76-73.eu-west-1.compute.amazonaws.com',
+      host: 'localhost',
       port: 5432,
-      username: 'ooypxvpejoockv',
-      password:
-        '820a8e4d5da422c46574dd1d84c8568c133997ca0aec6ba1c0117ed7dee752b5',
-      database: 'dc2rii2r5knt2d',
+      username: 'root',
+      password: 'root',
+      database: 'test_db',
       autoLoadEntities: true,
       migrations: ['dist/migrations/*{.ts,.js}'],
       migrationsTableName: 'migrations_typeorm',
