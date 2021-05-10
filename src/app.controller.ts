@@ -28,7 +28,7 @@ export class AppController {
       ' push de ' +
       ' ' +
       name +
-      ' sur le repo ' +
+      ' sur le repository ' +
       repo +
       ' - message du commit : ' +
       message;
