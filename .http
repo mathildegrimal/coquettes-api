@@ -27,3 +27,12 @@ content-type: application/json
 {
     "message":"coucou"
 }
+
+
+###
+POST http://coquettes.herokuapp.com/command/github HTTP/1.1
+content-type: application/json
+
+{
+    "message":"coucou"
+}
