@@ -14,4 +14,8 @@ export class AppController {
   toto(@Req() request: Request) {
     console.log(request.body);
   }
+  @Get('/test')
+  test(): string {
+    return 'This action returns a test';
+  }
 }
