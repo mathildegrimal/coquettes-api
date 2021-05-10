@@ -33,7 +33,7 @@ export class CommandService {
     }
     return command;
   }
-  async getCommandByClientId(id: number): Promise<Command[]> {}
+  //TODO: getCommandByClientID()
 
   async postCommand(command: ICommand): Promise<any> {
     return this.commandRepository.save(command);

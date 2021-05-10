@@ -18,3 +18,12 @@ content-type: application/json
     "clientEmail": "mat.grimal@gmail.com",
     "deliveryNumber": "123456"
 }
+
+###
+
+POST http://localhost:3000/command/github HTTP/1.1
+content-type: application/json
+
+{
+    "message":"coucou"
+}

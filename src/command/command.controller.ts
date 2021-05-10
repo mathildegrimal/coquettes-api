@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { CommandService } from './command.service';
 import { CommandDto } from './command.dto';
 import { Command } from './entity/command.entity';
+import { Request } from 'express';
 
 @Controller('command')
 export class CommandController {
@@ -23,5 +24,10 @@ export class CommandController {
   @Post('/new')
   public postCommand(@Body() command: CommandDto): Promise<any> {
     return this.commandService.postCommand(command);
+  }
+
+  @Post('/github')
+  toto(@Req() request: Request) {
+    console.log(request.body);
   }
 }
