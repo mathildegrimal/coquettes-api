@@ -22,7 +22,7 @@ export class AppController {
 
     const discord =
       'Le ' +
-      dateDate +
+      dateDat +
       ', push de ' +
       ' ' +
       name +
