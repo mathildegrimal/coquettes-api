@@ -18,7 +18,7 @@ export class AppController {
     const name = request.body.head_commit.author.name;
     const message = request.body.head_commit.message;
     const repo = request.body.repository.name;
-    const dateDate = request.body.head_commit.timestamp;
+    const dateDat = request.body.head_commit.timestamp;
 
     const discord =
       'Le ' +
@@ -41,7 +41,7 @@ export class AppController {
               title: 'Un exemple de super titre',
               description: 'Ici, le corps du texte...',
               url: 'https://zestedesavoir.com/on-peut-aussi-mettre-une-url',
-              timestamp: date,
+              timestamp: dateDat,
               author: { name: 'Mathilde' },
             },
           ],
