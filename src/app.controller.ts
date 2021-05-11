@@ -41,7 +41,7 @@ export class AppController {
               title: 'Un exemple de super titre',
               description: 'Ici, le corps du texte...',
               url: 'https://zestedesavoir.com/on-peut-aussi-mettre-une-url',
-              timestamp: '2019-02-28T13:42:00',
+              timestamp: date,
               author: { name: 'Mathilde' },
             },
           ],
