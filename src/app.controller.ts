@@ -35,13 +35,13 @@ export class AppController {
       .post(
         'https://discord.com/api/webhooks/841432524526059590/qkSb1Hv08-2HpNceveLZZrXFnUDrVlMDmsVt4ehPaBSbLTP_hv1VHZ2iw0H5oIwXrTqc',
         {
-          content: discord,
+          content: discordd,
           embeds: [
             {
               title: 'Un exemple de super titre',
               description: 'Ici, le corps du texte...',
               url: 'https://zestedesavoir.com/on-peut-aussi-mettre-une-url',
-              timestamp: dateDt,
+              timestamp: dateDast,
               author: { name: 'Mathilde' },
             },
           ],
