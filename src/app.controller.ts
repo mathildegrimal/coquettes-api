@@ -18,11 +18,11 @@ export class AppController {
     const name = request.body.head_commit.author.name;
     const message = request.body.head_commit.message;
     const repo = request.body.repository.name;
-    const date = request.body.head_commit.timestamp;
+    const dateDate = request.body.head_commit.timestamp;
 
     const discord =
       'Le ' +
-      date +
+      dateDate +
       ', push de ' +
       ' ' +
       name +
