@@ -18,15 +18,15 @@ export class AppController {
     const name = request.body.head_commit.author.name;
     const message = request.body.head_commit.message;
     const repo = request.body.repository.name;
-    const dateDat = request.body.head_commit.timestamp;
+    const date = request.body.head_commit.timestamp;
 
     const discord =
       'Le ' +
-      dateDat +
+      date +
       ', push de ' +
       ' ' +
       name +
-      ' sur le repository de ' +
+      ' sur le repository ' +
       repo +
       ' - message du commit : ' +
       message;
@@ -35,13 +35,13 @@ export class AppController {
       .post(
         'https://discord.com/api/webhooks/841432524526059590/qkSb1Hv08-2HpNceveLZZrXFnUDrVlMDmsVt4ehPaBSbLTP_hv1VHZ2iw0H5oIwXrTqc',
         {
-          content: discordd,
+          content: discord,
           embeds: [
             {
               title: 'Un exemple de super titre',
               description: 'Ici, le corps du texte...',
               url: 'https://zestedesavoir.com/on-peut-aussi-mettre-une-url',
-              timestamp: dateDast,
+              timestamp: date,
               author: { name: 'Mathilde' },
             },
           ],
