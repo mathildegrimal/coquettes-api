@@ -23,9 +23,9 @@ export class AppController {
     const date = request.body.head_commit.timestamp;
 
     const discord =
-      'le ' +
+      'Le ' +
       date +
-      ' push de ' +
+      ', push de ' +
       ' ' +
       name +
       ' sur le repository ' +
