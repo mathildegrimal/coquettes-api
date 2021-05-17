@@ -9,6 +9,7 @@ import { ClientModule } from './client/client.module';
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env' }),
     TypeOrmModule.forRoot({
+      name: 'default',
       type: 'postgres',
       host: 'ec2-54-195-76-73.eu-west-1.compute.amazonaws.com',
       port: 5432,
@@ -21,6 +22,8 @@ import { ClientModule } from './client/client.module';
       migrationsTableName: 'migrations_typeorm',
       migrationsRun: true,
       synchronize: true,
+      logging: false,
+      ssl: true,
     }),
     CommandModule,
     ClientModule,
