@@ -21,17 +21,28 @@ content-type: application/json
 
 ###
 
-POST http://localhost:3000/test HTTP/1.1
+POST http://localhost:3000/client/new HTTP/1.1
 content-type: application/json
 
 {
-        "content": "encore un test"
-      }
+    "firstname": "michel",
+    "lastname": "grimal",
+    "adress": "guzargues",
+    "email": "michel.grimal@gmail.com"
+}
+
 
 ###
-POST https://coquettes.herokuapp.com/github HTTP/1.1
+
+POST http://localhost:3000/command/new HTTP/1.1
 content-type: application/json
 
 {
-    "message":"coucou"
+    "date": "2018-09-22T15:00:00",
+    "orderNumber": "EZR3RPP3",
+    "status": "livrée",
+    "amount": 140,
+    "billNumber": 122414,
+    "deliveryNumber": 43425, 
+    "client": {"id" :2}
 }

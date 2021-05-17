@@ -26,6 +26,6 @@ export class Client {
   })
   email: string;
 
-  @OneToMany(() => Command, (command) => command.client)
+  @OneToMany(() => Command, (command: Command) => command.client)
   commands: Command[];
 }

@@ -7,10 +7,11 @@ import { ClientService } from './client.service';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  @Get()
+  @Get('all')
   public getCommands(): Promise<Client[]> {
     return this.clientService.getClients();
   }
+
   @Get(':id')
   public getClientById(@Param('id') id: number) {
     return this.clientService.getClientById(id);

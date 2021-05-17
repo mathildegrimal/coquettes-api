@@ -1,33 +1,32 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CommandService } from './command.service';
 import { CommandDto } from './command.dto';
 import { Command } from './entity/command.entity';
-import { Request } from 'express';
 
 @Controller('command')
 export class CommandController {
   constructor(private readonly commandService: CommandService) {}
 
-  @Get()
-  public getCommands(): Promise<Command[]> {
-    return this.commandService.getCommands();
+  @Get('/all')
+  public getAllCommands(): Promise<Command[]> {
+    return this.commandService.getAllCommands();
   }
-  @Get(':id')
-  public getCommandById(@Param('id') id: number) {
-    return this.commandService.getCommandById(id);
+  //One command from one client
+
+  @Get('/:commandid')
+  public getOneCommand(@Param('commandid') commandid: number) {
+    return this.commandService.getOneCommand(commandid);
   }
-  //getAllbyClient
-  @Get('/client/:id')
-  public getCommandByClientId(@Param('id') id: number) {
-    return this.commandService.getCommandById(id);
+
+  //All commands from one client
+  @Get('/all/:clientid')
+  public getAllCommandsByClientId(@Param('clientid') clientid: number) {
+    return this.commandService.getAllCommandsByClientId(clientid);
   }
+
+  //create new command
   @Post('/new')
   public postCommand(@Body() command: CommandDto): Promise<any> {
     return this.commandService.postCommand(command);
-  }
-
-  @Post('/github')
-  toto(@Req() request: Request) {
-    console.log(request.body);
   }
 }
