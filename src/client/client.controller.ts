@@ -17,7 +17,7 @@ export class ClientController {
     return this.clientService.getClientById(id);
   }
   @Post('/new')
-  public postClient(@Request() req: Request) {
-    console.log(req);
+  postClient(@Request() req: Request) {
+    console.log(req.body);
   }
 }
