@@ -18,6 +18,9 @@ export class ClientController {
   }
   @Post('/new')
   postClient(@Request() req: Request) {
-    console.log(req.body);
+    //TODO : verif si client deja en bdd, si non rajouter / sur email, nom et prénom ?
+    //TODO : capitalise les infos
+    const requestResult = req.body;
+    console.log(requestResult.data);
   }
 }
