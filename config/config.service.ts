@@ -17,23 +17,4 @@ export class ConfigService {
   public async getPortConfig() {
     return this.get('PORT');
   }
-
-  public async getMongoConfig() {
-    return {
-      uri:
-        'mongodb://' +
-        this.get('MONGO_USER') +
-        ':' +
-        this.get('MONGO_PASSWORD') +
-        '@' +
-        this.get('MONGO_HOST') +
-        '/' +
-        this.get('MONGO_DATABASE') +
-        '?retryWrites=true&w=majority',
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-    };
-  }
 }

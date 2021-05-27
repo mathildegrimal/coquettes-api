@@ -1,12 +1,10 @@
-import { Client } from 'src/client/entity/client.entity';
-
 export class CommandDto {
-  readonly id: number;
-  readonly orderNumber: string;
-  readonly date: string;
-  readonly status: string;
+  readonly date: Date;
   readonly amount: number;
-  readonly billNumber: number;
-  readonly client: Client;
-  readonly deliveryNumber: number;
+  readonly adress: string;
+  readonly zipcode: string;
+  readonly city: string;
+  readonly client: string;
+  readonly invoice: string;
+  readonly products: any;
 }

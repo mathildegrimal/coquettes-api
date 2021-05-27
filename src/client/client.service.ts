@@ -1,17 +1,9 @@
 import { HttpException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Command } from 'src/command/entity/command.entity';
 import { Repository } from 'typeorm';
+import { ClientDto } from './client.dto';
 import { Client } from './entity/client.entity';
-
-interface IClient {
-  readonly firstname: string;
-  readonly lastname: string;
-  readonly adress: string;
-  readonly email: string;
-  readonly commands: Command[];
-}
 
 @Injectable()
 export class ClientService {
@@ -24,7 +16,7 @@ export class ClientService {
     return this.clientRepository.find();
   }
 
-  async getClientById(id: number): Promise<Client> {
+  async getClientById(id: string): Promise<Client> {
     const client = await this.clientRepository.findOne({ id });
     if (!client) {
       throw new HttpException('Not found', 404);
@@ -32,7 +24,28 @@ export class ClientService {
     return client;
   }
 
-  async postClient(client: IClient): Promise<any> {
+  async getClientByInfos(
+    firstname: string,
+    lastname: string,
+    email: string,
+  ): Promise<Client> {
+    const client = await this.clientRepository.findOne({
+      where: { firstname, lastname, email },
+    });
+    // if (!client) {
+    //   throw new HttpException('Not found', 404);
+    // }
+    return client;
+  }
+
+  async postClient(client: ClientDto): Promise<Client> {
     return this.clientRepository.save(client);
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.clientRepository.delete(id);
+  }
+  async removeByEmail(email: string): Promise<void> {
+    await this.clientRepository.delete({ email: email });
   }
 }

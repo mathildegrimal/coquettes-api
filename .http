@@ -1,23 +1,8 @@
-GET http://localhost:3000/command/ HTTP/1.1
+GET http://localhost:4000/command/all HTTP/1.1
 
 ###
 
-GET http://localhost:3000/command/609903226c1b371651ba1047 HTTP/1.1
-
-###
-
-POST http://localhost:3000/command/new/ HTTP/1.1
-content-type: application/json
-
-{
-    "billNumber": "OO2",
-    "clientFirstname": "michel",
-    "clientLastname": "Grimal",
-    "clientAdress": "2 rue des aires",
-    "clientBillingAdress": "2 rue des aires",
-    "clientEmail": "mat.grimal@gmail.com",
-    "deliveryNumber": "123456"
-}
+GET http://localhost:4000/command/8e611bfd-36fe-4b8d-bd61-447090d05f9d HTTP/1.1
 
 ###
 
@@ -34,15 +19,69 @@ content-type: application/json
 
 ###
 
-POST http://localhost:3000/command/new HTTP/1.1
+POST http://localhost:4000/command/new HTTP/1.1
 content-type: application/json
 
 {
-    "date": "2018-09-22T15:00:00",
-    "orderNumber": "EZR3RPP3",
-    "status": "livrée",
-    "amount": 140,
-    "billNumber": 122414,
-    "deliveryNumber": 43425, 
-    "client": {"id" :2}
+    "date": "2021-05-26T10:30:00",
+    "amount": 25000,
+    "adress": "310 route du Lirou",
+    "zipcode": "34820",
+    "city": "Guzargues",
+    "client": "f33605a7-fb56-4585-93cb-c5fee56228a3",
+    "products": [
+        {"datoId":"3RIERP444", "quantity":2, "amount":1000},
+        {"datoId":"352355", "quantity":1, "amount":1500}]
+    
 }
+
+
+###
+
+GET  http://localhost:4000/client/9cd3b312-689a-49f8-a3f7-f6106cbf1a73 HTTP/1.1
+content-type: application/json
+
+###
+
+DELETE  http://localhost:4000/client/delete/email/YOAN@GMAIL.COM HTTP/1.1
+content-type: application/json
+
+
+###
+
+DELETE  http://localhost:4000/command/delete/91081c63-a7d7-4923-834c-ac9cf2b9178e HTTP/1.1
+content-type: application/json
+
+###
+
+POST http://localhost:4000/invoice/new/ HTTP/1.1
+content-type: application/json
+
+{
+    "order": 999,
+    "year": "2021",
+    "number": "FA"
+}
+
+
+###
+
+GET  http://localhost:4000/invoice/year/2020 HTTP/1.1
+content-type: application/json
+
+###
+
+GET  http://localhost:4000/invoice/all HTTP/1.1
+content-type: application/json
+
+
+###
+
+PATCH http://localhost:4000/command/update/57853f11-21f4-4858-b0f5-b0502abefa00/6T11111111110 HTTP/1.1
+content-type: application/json
+
+
+###
+
+GET  http://localhost:4000/invoice/#FA000026-2021 HTTP/1.1
+content-type: application/json
