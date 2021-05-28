@@ -36,4 +36,3 @@ lerna-debug.log*
 .envsendgrid.env
 .env
 .ormconfig.js
-src/admin-panel/admin-panel.plugin.ts
