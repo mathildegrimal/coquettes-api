@@ -12,9 +12,9 @@ import { CommandDto } from './command.dto';
 import { Command } from './entity/command.entity';
 import { Observable } from 'rxjs';
 import { ConfigService } from 'config/config.service';
-import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('command')
+@ApiTags('Command')
 @Controller('command')
 export class CommandController {
   constructor(
@@ -23,13 +23,15 @@ export class CommandController {
     private configService: ConfigService,
   ) {}
 
+  @ApiOperation({ summary: 'Getting shipping status of every commmand' })
   @Get('shippingStatus')
   async getStatusCode(): Promise<Observable<any>> {
     return this.commandService.getStatusCode();
   }
 
+  @ApiOperation({ summary: 'Getting all commmands' })
   @ApiOkResponse({
-    description: 'The record has been successfully get',
+    description: 'Records found',
     type: Command,
   })
   @Get('/all')
@@ -37,8 +39,9 @@ export class CommandController {
     return this.commandService.getAllCommands();
   }
 
+  @ApiOperation({ summary: 'Getting one command by Id' })
   @ApiOkResponse({
-    description: 'Get one Command bu Id success',
+    description: 'The found record',
     type: Command,
   })
   @Get('/:commandid')
@@ -46,8 +49,9 @@ export class CommandController {
     return await this.commandService.getOneCommand(commandid);
   }
 
+  @ApiOperation({ summary: 'Getting all commands from one client' })
   @ApiOkResponse({
-    description: 'Get all Commands from one Client success',
+    description: 'Records found',
     type: Command,
   })
   @Get('/all/:clientid')
@@ -55,6 +59,7 @@ export class CommandController {
     return this.commandService.getAllCommandsByClientId(clientid);
   }
 
+  @ApiOperation({ summary: 'Create one Command' })
   @ApiOkResponse({
     description: 'The command has been successfully created',
     type: Command,
@@ -66,6 +71,7 @@ export class CommandController {
     return this.commandService.postCommand(commandDto);
   }
 
+  @ApiOperation({ summary: 'Updating delivery number of one command' })
   @Patch('/update/:id/:deliveryNumber')
   update(
     @Param('id') id: string,

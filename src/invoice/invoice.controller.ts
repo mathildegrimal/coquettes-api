@@ -1,25 +1,27 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiBody, ApiHeader, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Invoice } from './entity/invoice.entity';
 import { InvoiceDto } from './invoice.dto';
 import { InvoiceService } from './invoice.service';
 
-@ApiHeader({
-  name: 'Commandes',
-  description: 'Routes Commandes',
-})
-@ApiTags('invoice')
+@ApiTags('Invoice')
 @Controller('invoice')
 export class InvoiceController {
   constructor(private invoiceService: InvoiceService) {}
 
+  @ApiOperation({ summary: 'Getting all invoices' })
+  @ApiOkResponse({
+    description: 'Found records',
+    type: Invoice,
+  })
   @Get('all')
   public async getInvoices(): Promise<Invoice[]> {
     return this.invoiceService.getInvoices();
   }
 
+  @ApiOperation({ summary: 'Getting one invoice by number' })
   @ApiOkResponse({
-    description: 'The record has been successfully get',
+    description: 'Found record',
     type: Invoice,
   })
   @Get('number/:number')
@@ -31,8 +33,9 @@ export class InvoiceController {
     return await this.invoiceService.getInvoiceByNumber(numberEncoded);
   }
 
+  @ApiOperation({ summary: 'Getting one invoice by id' })
   @ApiOkResponse({
-    description: 'The record has been successfully get',
+    description: 'Found record',
     type: Invoice,
   })
   @Get('id/:id')
@@ -40,8 +43,9 @@ export class InvoiceController {
     return await this.invoiceService.getInvoiceById(id);
   }
 
+  @ApiOperation({ summary: 'Getting max order number of invoices by year' })
   @ApiOkResponse({
-    description: 'The record has been successfully get',
+    description: 'max : number',
     type: Invoice,
   })
   @Get('year/:year')
@@ -49,6 +53,11 @@ export class InvoiceController {
     return await this.invoiceService.getMaxOrderInvoiceByYear(year);
   }
 
+  @ApiOperation({ summary: 'Creating a new invoice' })
+  @ApiOkResponse({
+    description: 'Invoice created',
+    type: Invoice,
+  })
   @Post('/new')
   @ApiBody({ type: [InvoiceDto] })
   public async newCommand(@Body() invoiceDto: InvoiceDto) {

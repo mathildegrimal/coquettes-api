@@ -5,7 +5,12 @@ import { ClientService } from './client.service';
 //import { ClientDto } from './client.dto';
 //import { CreateItemDto } from './ItemDto.dto';
 import Stripe from 'stripe';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 const calculateOrderAmount = (items) => {
   let total = 0;
@@ -22,13 +27,14 @@ const stripe = new Stripe(
   },
 );
 
-@ApiTags('client')
+@ApiTags('Client')
 @Controller('client')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
+  @ApiOperation({ summary: 'Getting all clients' })
   @ApiOkResponse({
-    description: 'The record has been successfully get',
+    description: 'Found records',
     type: Client,
   })
   @Get('all')
@@ -36,18 +42,27 @@ export class ClientController {
     return this.clientService.getClients();
   }
 
+  @ApiOperation({ summary: 'Deleting one client with his Id' })
+  @ApiOkResponse({
+    description: 'Client deleted',
+  })
   @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.clientService.remove(id);
   }
 
+  @ApiOperation({ summary: 'Deleting one client with his email' })
+  @ApiOkResponse({
+    description: 'Client deleted',
+  })
   @Delete('delete/email/:email')
   removeByEmail(@Param('email') email: string) {
     return this.clientService.removeByEmail(email);
   }
 
+  @ApiOperation({ summary: 'Getting one client with his id' })
   @ApiOkResponse({
-    description: 'The record has been successfully get',
+    description: 'Found record',
     type: Client,
   })
   @Get(':id')
@@ -55,6 +70,7 @@ export class ClientController {
     return this.clientService.getClientById(id);
   }
 
+  @ApiOperation({ summary: 'Creating a new client' })
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
     type: Client,
@@ -64,6 +80,7 @@ export class ClientController {
     console.log(data);
   }
 
+  @ApiOperation({ summary: 'Crating a payment intent for stripe' })
   @Post('/create-payment-intent')
   async paymentIntent(@Body() data: any) {
     console.log("creation d'un paiement intent");
