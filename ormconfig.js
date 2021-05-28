@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const AdminUser = require('nestjs-admin').AdminUserEntity;
-
 module.exports = {
   name: 'default',
   type: 'postgres',
@@ -14,5 +11,4 @@ module.exports = {
   migrationsRun: true,
   synchronize: false,
   logging: false,
-  entities: [AdminUser],
 };

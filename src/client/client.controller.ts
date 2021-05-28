@@ -5,6 +5,7 @@ import { ClientService } from './client.service';
 //import { ClientDto } from './client.dto';
 //import { CreateItemDto } from './ItemDto.dto';
 import Stripe from 'stripe';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 const calculateOrderAmount = (items) => {
   let total = 0;
@@ -21,10 +22,15 @@ const stripe = new Stripe(
   },
 );
 
+@ApiTags('client')
 @Controller('client')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
+  @ApiOkResponse({
+    description: 'The record has been successfully get',
+    type: Client,
+  })
   @Get('all')
   public getCommands(): Promise<Client[]> {
     return this.clientService.getClients();
@@ -40,10 +46,19 @@ export class ClientController {
     return this.clientService.removeByEmail(email);
   }
 
+  @ApiOkResponse({
+    description: 'The record has been successfully get',
+    type: Client,
+  })
   @Get(':id')
   public getClientById(@Param('id') id: string) {
     return this.clientService.getClientById(id);
   }
+
+  @ApiCreatedResponse({
+    description: 'The record has been successfully created.',
+    type: Client,
+  })
   @Post('/new')
   postClient(@Body('data') data: any) {
     console.log(data);
