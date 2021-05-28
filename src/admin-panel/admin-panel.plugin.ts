@@ -17,6 +17,7 @@ import * as bcrypt from 'bcrypt';
 export async function setupAdminPanel(app: INestApplication): Promise<void> {
   AdminBro.registerAdapter({ Database, Resource });
   Resource.validate = validate;
+  
   const connection = await createConnection({
     name: 'test',
     type: 'postgres',
