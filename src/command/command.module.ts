@@ -6,7 +6,6 @@ import { Command } from './entity/command.entity';
 import { ClientModule } from 'src/client/client.module';
 import { InvoiceModule } from 'src/invoice/invoice.module';
 import { ConfigModule } from 'config/ConfigModule';
-//import { PdfModule } from 'src/pdf/pdf.module';
 
 @Module({
   imports: [

@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 
 export class ConfigService {
   private readonly envConfig: Record<string, string>;
+
   constructor() {
     const result = dotenv.config();
     if (result.error) {
@@ -10,6 +11,7 @@ export class ConfigService {
       this.envConfig = result.parsed;
     }
   }
+
   public get(key: string): string {
     return this.envConfig[key];
   }

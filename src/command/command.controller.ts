@@ -6,14 +6,15 @@ import {
   Param,
   Patch,
   Post,
+  Res,
 } from '@nestjs/common';
 import { CommandService } from './command.service';
 import { CommandDto } from './command.dto';
 import { Command } from './entity/command.entity';
 import { Observable } from 'rxjs';
-import { ConfigService } from 'config/config.service';
+import { ConfigService } from '../../config/config.service';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-
+import { Response } from 'express';
 @ApiTags('Command')
 @Controller('command')
 export class CommandController {
@@ -77,6 +78,30 @@ export class CommandController {
     @Param('id') id: string,
     @Param('deliveryNumber') deliveryNumber: string,
   ) {
+    console.log('deliveryUpdated');
     return this.commandService.updateDeliveryNumberCommand(id, deliveryNumber);
+  }
+
+  @ApiOperation({ summary: 'Getting sum commands grouped by day' })
+  @ApiOkResponse({
+    description: 'Records found',
+    type: Command,
+  })
+  @Get('/getSum/all')
+  async getTotalCommandByDay() {
+    return await this.commandService.getTotalCommandsByDay();
+  }
+
+  @Get('invoice/new/:id')
+  async getPDF(@Res() res: Response, @Param('id') id: string): Promise<void> {
+    const buffer = await this.commandService.generatePDFInvoice(id);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'inline; filename=example.pdf',
+      'Content-Length': buffer.length,
+    });
+
+    res.end(buffer);
   }
 }

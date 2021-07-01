@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommandController } from './command.controller';
+import { CommandController } from '../../src/command/command.controller';
+import { CommandService } from '../../src/command/command.service';
 
 describe('CommandController', () => {
   let controller: CommandController;
@@ -7,6 +8,7 @@ describe('CommandController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CommandController],
+      providers: [CommandService],
     }).compile();
 
     controller = module.get<CommandController>(CommandController);

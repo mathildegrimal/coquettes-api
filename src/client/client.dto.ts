@@ -9,4 +9,8 @@ export class ClientDto {
   readonly adress: string;
   @ApiProperty()
   readonly email: string;
+  @ApiProperty()
+  readonly created_at: Date;
+  @ApiProperty()
+  readonly tel: string;
 }

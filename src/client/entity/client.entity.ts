@@ -38,6 +38,19 @@ export class Client extends BaseEntity {
   })
   email: string;
 
+  @ApiProperty()
+  @Column({
+    nullable: true,
+    type: 'timestamp',
+  })
+  created_at: Date;
+
+  @ApiProperty()
+  @Column({
+    nullable: true,
+  })
+  tel: string;
+
   @ApiProperty({ type: () => Command })
   @OneToMany(() => Command, (command: Command) => command.client)
   commands: Command[];

@@ -71,6 +71,12 @@ export class Command extends BaseEntity {
 
   @ApiProperty()
   @Column({
+    nullable: true,
+  })
+  transport: string;
+
+  @ApiProperty()
+  @Column({
     nullable: false,
   })
   adress: string;

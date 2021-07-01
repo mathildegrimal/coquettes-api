@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommandService } from './command.service';
+import { CommandService } from '../../src/command/command.service';
 
 describe('CommandService', () => {
   let service: CommandService;

@@ -2,14 +2,14 @@ import { HttpException, HttpService } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClientService } from 'src/client/client.service';
-import { Repository, UpdateResult } from 'typeorm';
+import { getRepository, Repository, UpdateResult } from 'typeorm';
 import { CommandDto } from './command.dto';
 import { Command } from './entity/command.entity';
 import { randomBytes } from 'crypto';
 import { InvoiceService } from 'src/invoice/invoice.service';
 import * as PDFDocument from 'pdfkit';
 
-import { ConfigService } from 'config/config.service';
+import { ConfigService } from '../../config/config.service';
 import * as sgMail from '@sendgrid/mail';
 import * as fs from 'fs';
 
@@ -53,6 +53,7 @@ export class CommandService {
 
   async getAllCommands(): Promise<Command[]> {
     return await this.commandRepository.find({
+      order: { date: 'DESC' },
       relations: ['client', 'invoice'],
     });
   }
@@ -92,13 +93,19 @@ export class CommandService {
 
   async postCommand(command: CommandDto): Promise<Command> {
     const amount = command.amount / 100;
-    let orderNumber = randomBytes(5).toString('hex').toUpperCase();
-    const commandCheck = await this.commandRepository.findOne({
-      where: { orderNumber },
-    });
-    if (commandCheck != undefined) {
-      orderNumber = randomBytes(5).toString('hex').toUpperCase();
-    }
+
+    const generateOrderNumber = async () => {
+      const orderNumber = randomBytes(5).toString('hex').toUpperCase();
+      const commandCheck = await this.commandRepository.findOne({
+        where: { orderNumber },
+      });
+      if (commandCheck != undefined) {
+        generateOrderNumber();
+        return;
+      }
+      return orderNumber;
+    };
+    const orderNumber = await generateOrderNumber();
 
     //génération de la facture et du n° de facture
     const number = await this.generateInvoice(new Date(command.date), amount);
@@ -111,9 +118,9 @@ export class CommandService {
     const client = await this.clientService.getClientById(command.client);
 
     //génération étiquette (service etiquette, call axios avec xml);
-    const deliveryNumber = null;
+    const deliveryNumber = 'null';
 
-    const newCommand = await this.commandRepository.save({
+    const newCommand = this.commandRepository.create({
       ...command,
       amount,
       client,
@@ -122,6 +129,7 @@ export class CommandService {
       deliveryNumber,
       invoice,
     });
+    await this.commandRepository.save(newCommand);
 
     await this.sendInvoiceMail(invoice.id);
 
@@ -287,12 +295,12 @@ export class CommandService {
     });
 
     for (const command of commands) {
-      if (command.deliveryNumber != null) {
+      if (command.deliveryNumber != 'null') {
         this.httpService
           .get(`${URL}${command.deliveryNumber}?${lg}`, {
             headers: {
               // eslint-disable-next-line prettier/prettier
-              'Accept': 'application/json',
+              Accept: 'application/json',
               'X-Okapi-Key': OKAPI_KEY,
             },
           })
@@ -396,5 +404,27 @@ export class CommandService {
       firstname: command.client.firstname,
     };
     return mailInfos;
+  }
+
+  async getTotalCommandsByDay(): Promise<any> {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 6);
+
+    const commandEvolutionAmountAndCount = await getRepository(Command)
+      .createQueryBuilder('command')
+      .orderBy(`DATE_TRUNC('month', command.date)`)
+      .select('COUNT(*)', 'count')
+      .addSelect('SUM(amount)', 'amount')
+      .addSelect(`DATE_TRUNC('month', command.date)`, 'dateMonth')
+      .where('command.date > :start_at', {
+        start_at: date,
+      })
+      .groupBy(`DATE_TRUNC('month', command.date)`)
+      .getRawMany();
+
+    const datas = {
+      evolution: commandEvolutionAmountAndCount,
+    };
+    return datas;
   }
 }

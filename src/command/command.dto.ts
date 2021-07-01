@@ -6,6 +6,8 @@ export class CommandDto {
   @ApiProperty()
   readonly amount: number;
   @ApiProperty()
+  readonly transport: string;
+  @ApiProperty()
   readonly adress: string;
   @ApiProperty()
   readonly zipcode: string;
