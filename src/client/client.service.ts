@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SK_TEST, {
   apiVersion: '2020-08-27',
 });
 
-const calculateOrderAmount = (items) => {
+const calculateOrderAmount = (items: any) => {
   let total = 0;
   for (const element of items) {
     total += element.quantity * element.amount;
