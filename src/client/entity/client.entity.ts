@@ -41,15 +41,15 @@ export class Client extends BaseEntity {
   @ApiProperty()
   @Column({
     nullable: true,
-    type: 'timestamp',
   })
-  created_at: Date;
+  tel: string;
 
   @ApiProperty()
   @Column({
     nullable: true,
+    type: 'timestamp',
   })
-  tel: string;
+  created_at: Date;
 
   @ApiProperty({ type: () => Command })
   @OneToMany(() => Command, (command: Command) => command.client)

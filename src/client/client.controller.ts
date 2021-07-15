@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Client } from './entity/client.entity';
 import { ClientService } from './client.service';
 import {
@@ -7,7 +7,6 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { ClientDto } from './client.dto';
 
 @ApiTags('Client')
 @Controller('client')
@@ -20,36 +19,8 @@ export class ClientController {
     type: Client,
   })
   @Get('all')
-  public getCommands(): Promise<Client[]> {
-    return this.clientService.getClients();
-  }
-
-  @ApiOperation({ summary: 'Deleting one client with his Id' })
-  @ApiOkResponse({
-    description: 'Client deleted',
-  })
-  @Delete('delete/:id')
-  remove(@Param('id') id: string) {
-    return this.clientService.remove(id);
-  }
-
-  @ApiOperation({ summary: 'Deleting one client with his email' })
-  @ApiOkResponse({
-    description: 'Client deleted',
-  })
-  @Delete('delete/email/:email')
-  removeByEmail(@Param('email') email: string) {
-    return this.clientService.removeByEmail(email);
-  }
-
-  @ApiOperation({ summary: 'Getting one client with his id' })
-  @ApiOkResponse({
-    description: 'Found record',
-    type: Client,
-  })
-  @Get(':id')
-  public getClientById(@Param('id') id: string) {
-    return this.clientService.getClientById(id);
+  async getClients(): Promise<Client[]> {
+    return await this.clientService.getClients();
   }
 
   @ApiOperation({ summary: 'Creating a new client' })
@@ -58,11 +29,13 @@ export class ClientController {
     type: Client,
   })
   @Post('/new')
-  postClient(@Body() clientDto: ClientDto) {
-    return this.clientService.postClient(clientDto);
+  async postClient(@Body() data: any) {
+    return await this.clientService.postClient(data);
   }
 
-  @ApiOperation({ summary: 'Creating a payment intent for stripe' })
+  @ApiOperation({
+    summary: 'Creating a new client and a payment intent for stripe',
+  })
   @Post('/create-payment-intent')
   async paymentIntent(@Body() data: any) {
     return await this.clientService.postClient(data);

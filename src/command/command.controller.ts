@@ -1,63 +1,50 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpService,
-  Param,
-  Patch,
-  Post,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Res } from '@nestjs/common';
 import { CommandService } from './command.service';
 import { CommandDto } from './command.dto';
 import { Command } from './entity/command.entity';
 import { Observable } from 'rxjs';
-import { ConfigService } from '../../config/config.service';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+
 @ApiTags('Command')
 @Controller('command')
 export class CommandController {
-  constructor(
-    private commandService: CommandService,
-    private readonly httpService: HttpService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private commandService: CommandService) {}
 
-  @ApiOperation({ summary: 'Getting shipping status of every commmand' })
+  @ApiOperation({ summary: 'Get shipping status of every commmand' })
   @Get('shippingStatus')
   async getStatusCode(): Promise<Observable<any>> {
     return this.commandService.getStatusCode();
   }
 
-  @ApiOperation({ summary: 'Getting all commmands' })
+  @ApiOperation({ summary: 'Get all commmands' })
   @ApiOkResponse({
     description: 'Records found',
     type: Command,
   })
   @Get('/all')
-  public getAllCommands(): Promise<Command[]> {
-    return this.commandService.getAllCommands();
+  async getAllCommands(): Promise<Command[]> {
+    return await this.commandService.getAllCommands();
   }
 
-  @ApiOperation({ summary: 'Getting one command by Id' })
+  @ApiOperation({ summary: 'Get one command by Id' })
   @ApiOkResponse({
     description: 'The found record',
     type: Command,
   })
-  @Get('/:commandid')
+  @Get('/id/:commandid')
   async getOneCommand(@Param('commandid') commandid: string) {
     return await this.commandService.getOneCommand(commandid);
   }
 
-  @ApiOperation({ summary: 'Getting all commands from one client' })
+  @ApiOperation({ summary: 'Get all commands from one client' })
   @ApiOkResponse({
     description: 'Records found',
     type: Command,
   })
   @Get('/all/:clientid')
-  public getAllCommandsByClientId(@Param('clientid') clientid: string) {
-    return this.commandService.getAllCommandsByClientId(clientid);
+  async getAllCommandsByClientId(@Param('clientid') clientid: string) {
+    return await this.commandService.getAllCommandsByClientId(clientid);
   }
 
   @ApiOperation({ summary: 'Create one Command' })
@@ -67,9 +54,9 @@ export class CommandController {
   })
   @Post('/new')
   @ApiBody({ type: [CommandDto] })
-  public newCommand(@Body() commandDto: CommandDto) {
+  async newCommand(@Body() commandDto: CommandDto) {
     console.log("creation d'une nouvelle commande");
-    return this.commandService.postCommand(commandDto);
+    return await this.commandService.postCommand(commandDto);
   }
 
   @ApiOperation({ summary: 'Updating delivery number of one command' })
@@ -82,16 +69,21 @@ export class CommandController {
     return this.commandService.updateDeliveryNumberCommand(id, deliveryNumber);
   }
 
-  @ApiOperation({ summary: 'Getting sum commands grouped by day' })
+  @ApiOperation({ summary: 'Get sum commands grouped by month' })
   @ApiOkResponse({
     description: 'Records found',
     type: Command,
   })
   @Get('/getSum/all')
-  async getTotalCommandByDay() {
-    return await this.commandService.getTotalCommandsByDay();
+  async getTotalCommandByMonth() {
+    return await this.commandService.getTotalCommandsByMonth();
   }
 
+  @ApiOperation({ summary: 'Generating one invoice with its number' })
+  @ApiOkResponse({
+    description: 'Invoice generated',
+    type: Command,
+  })
   @Get('invoice/new/:id')
   async getPDF(@Res() res: Response, @Param('id') id: string): Promise<void> {
     const buffer = await this.commandService.generatePDFInvoice(id);

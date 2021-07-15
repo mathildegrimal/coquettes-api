@@ -6,10 +6,7 @@ import { Client } from './entity/client.entity';
 
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SK_TEST, {
-  apiVersion: '2020-08-27',
-});
-
+//fonction pour calculer le total de la commande
 const calculateOrderAmount = (items: any) => {
   let total = 0;
   for (const element of items) {
@@ -17,6 +14,7 @@ const calculateOrderAmount = (items: any) => {
   }
   return total;
 };
+
 @Injectable()
 export class ClientService {
   constructor(
@@ -47,20 +45,15 @@ export class ClientService {
     const client = await this.clientRepository.findOne({
       where: { firstname, lastname, email },
     });
-    // if (!client) {
-    //   throw new HttpException('Not found', 404);
-    // }
+
     return client;
   }
 
   async postClient(data: any): Promise<any> {
-    console.log("creation d'un paiement intent");
-
-    //capitalize infos client
     for (const property in data.client) {
       data.client[property] = data.client[property].toUpperCase();
     }
-    //vérifier si client est en bdd
+
     const client = await this.getClientByInfos(
       data.client.firstname,
       data.client.lastname,
@@ -68,9 +61,10 @@ export class ClientService {
     );
 
     let idClient = '';
-    const date = new Date();
+
     if (!client) {
-      await this.clientRepository.save({ ...data.client, date: date });
+      const date = new Date();
+      await this.clientRepository.save({ ...data.client, created_at: date });
       const newclient = await this.getClientByInfos(
         data.client.firstname,
         data.client.lastname,
@@ -80,8 +74,11 @@ export class ClientService {
     } else {
       idClient = client.id;
     }
-    //si oui
-    //creation du payment intent de stripe
+
+    const stripe = new Stripe(process.env.STRIPE_SK_TEST, {
+      apiVersion: '2020-08-27',
+    });
+
     if (data.items) {
       const items = data.items;
       const paymentIntent = await stripe.paymentIntents.create({
@@ -95,18 +92,10 @@ export class ClientService {
 
       const clientSecret = paymentIntent.client_secret;
 
-      //renvoie le client secret et l'email pour le reçu
       return {
         idclient: idClient,
         clientSecret: clientSecret,
       };
     }
-  }
-
-  async remove(id: string): Promise<void> {
-    await this.clientRepository.delete(id);
-  }
-  async removeByEmail(email: string): Promise<void> {
-    await this.clientRepository.delete({ email: email });
   }
 }

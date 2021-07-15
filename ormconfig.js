@@ -1,14 +1,17 @@
 module.exports = {
   name: 'default',
   type: 'postgres',
-  host: 'bhnrxamacay7u7zqkbo6-postgresql.services.clever-cloud.com',
+  host: 'bwtqvotofps58nmjvkic-postgresql.services.clever-cloud.com',
   port: 5432,
-  username: 'u9lapnpcmkhrahzfemnq',
-  password: 'CUh1myP599Hi5jL9Kp8P',
-  database: 'bhnrxamacay7u7zqkbo6',
-  migrations: ['dist/migrations/*{.ts,.js}'],
+  username: 'u8zgxtf1wufzw3wkruc3',
+  password: 'rtZbOwPOU3gGjjlAFiGn',
+  database: 'bwtqvotofps58nmjvkic',
+  migrations: ['migrations/*{.ts,.js}'],
   migrationsTableName: 'migrations_typeorm',
   migrationsRun: true,
   synchronize: false,
   logging: false,
+  cli: {
+    migrationsDir: 'migration',
+  },
 };

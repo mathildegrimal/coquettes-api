@@ -14,10 +14,6 @@ import {
 
 export class CommandProduct {
   @ApiProperty()
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @ApiProperty()
   @Column({
     nullable: false,
   })

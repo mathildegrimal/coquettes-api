@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ClientService } from 'src/client/client.service';
 import { getRepository, Repository, UpdateResult } from 'typeorm';
 import { CommandDto } from './command.dto';
-import { Command } from './entity/command.entity';
+import { Command, CommandProduct } from './entity/command.entity';
 import { randomBytes } from 'crypto';
 import { InvoiceService } from 'src/invoice/invoice.service';
 import * as PDFDocument from 'pdfkit';
@@ -13,6 +13,7 @@ import { ConfigService } from '../../config/config.service';
 import * as sgMail from '@sendgrid/mail';
 import * as fs from 'fs';
 
+//fonction qui rajoute des 0 avant le numéro de commande
 const PrefixInteger = (num: string, length: number) => {
   while (num.length < length) {
     num = '0' + num;
@@ -31,6 +32,12 @@ export class CommandService {
     private configService: ConfigService, //private pdfService: PdfService,
   ) {}
 
+  //équivalent de la requete préparée en php:
+  //$req = $db->prepare('UPDATE "command" SET "deliveryNumber" = :deliveryNumber WHERE "id" = :commandId');
+  //$req->bindValue('deliveryNumber',$deliveryNumber);
+  //$req->bindValue('commandId',$commandId);
+  //$req->execute();
+
   async updateDeliveryNumberCommand(
     commandid: string,
     deliveryNumber: string,
@@ -41,6 +48,11 @@ export class CommandService {
     return command;
   }
 
+  //équivalent de la requete préparée en php:
+  //$req = $db->prepare('UPDATE "command" SET "status" = :status WHERE "id" = :commandId');
+  //$req->bindValue('status',$status);
+  //$req->bindValue('commandId',$commandId);
+  //$req->execute();
   async updateStatusCommand(
     commandid: string,
     status: string,
@@ -51,6 +63,7 @@ export class CommandService {
     return command;
   }
 
+  //SELECT * FROM "command" LEFT JOIN "client" ON "client"."id" = "command"."clientId" LEFT JOIN "invoice" ON "invoice"."id"="command"."invoiceId"
   async getAllCommands(): Promise<Command[]> {
     return await this.commandRepository.find({
       order: { date: 'DESC' },
@@ -58,6 +71,7 @@ export class CommandService {
     });
   }
 
+  //SELECT * FROM "command" WHERE COMMAND.ID = :commandId  LEFT JOIN "client" ON "client"."id" = "command"."clientId" LEFT JOIN "invoice" ON "invoice"."id"="command"."invoiceId"
   async getOneCommand(commandid: string): Promise<Command> {
     const command = await this.commandRepository.findOne({
       where: { id: commandid },
@@ -69,6 +83,7 @@ export class CommandService {
     return command;
   }
 
+  //SELECT * FROM "command" WHERE "command"."invoiceId" = :invoiceId LEFT JOIN "client" ON "client"."id" = "command"."clientId" LEFT JOIN "invoice" ON "invoice"."id" = "command"."invoiceId"
   async getCommandByInvoice(invoiceId: string): Promise<Command> {
     const command = await this.commandRepository.findOne({
       where: { invoice: { id: invoiceId } },
@@ -80,6 +95,7 @@ export class CommandService {
     return command;
   }
 
+  //SELECT * FROM command WHERE "command"."clientId" = :clientId
   async getAllCommandsByClientId(clientid: string): Promise<Command[]> {
     const commands = await this.commandRepository.find({
       client: { id: clientid },
@@ -91,7 +107,21 @@ export class CommandService {
     return commands;
   }
 
+  //équivalent de la requete préparée en php:
+  //$req = $db->prepare('INSERT INTO command VALUES  (DEFAULT,:orderNumber,  :date, :amount, :deliveryNumber, :transport, :adress, :zipcode, :city, :client, :invoice, :products)
+  //$req->bindValue('orderNumber',$orderNumber);
+  //...
+  //$req->execute();
   async postCommand(command: CommandDto): Promise<Command> {
+    const products = [];
+    for (const item of command.products) {
+      const product = new CommandProduct();
+      product.datoId = item.datoId;
+      product.amount = item.amount;
+      product.quantity = item.quantity;
+      products.push(product);
+    }
+
     const amount = command.amount / 100;
 
     const generateOrderNumber = async () => {
@@ -107,17 +137,13 @@ export class CommandService {
     };
     const orderNumber = await generateOrderNumber();
 
-    //génération de la facture et du n° de facture
-    const number = await this.generateInvoice(new Date(command.date), amount);
+    const number = await this.createInvoice(new Date(command.date), amount);
     const invoice = await this.invoiceService.getInvoiceByNumber(number);
 
-    //statut : en attente de dépôt
     const status = 'en attente de dépôt';
 
-    //importer service client pour rechercher client en bdd et le mettre dans le save
     const client = await this.clientService.getClientById(command.client);
 
-    //génération étiquette (service etiquette, call axios avec xml);
     const deliveryNumber = 'null';
 
     const newCommand = this.commandRepository.create({
@@ -128,6 +154,7 @@ export class CommandService {
       status,
       deliveryNumber,
       invoice,
+      products,
     });
     await this.commandRepository.save(newCommand);
 
@@ -136,8 +163,7 @@ export class CommandService {
     return newCommand;
   }
 
-  async generateInvoice(date: Date, amount: number) {
-    //génération de la facture et du n° de facture
+  async createInvoice(date: Date, amount: number) {
     const billString = 'FA';
 
     const year = date.getFullYear().toString();
@@ -162,7 +188,7 @@ export class CommandService {
         size: 'LETTER',
         bufferPages: true,
       });
-      console.log(command.products);
+
       doc.pipe(
         fs.createWriteStream(
           `src/command/invoices/${command.invoice.number}.pdf`,
@@ -299,7 +325,6 @@ export class CommandService {
         this.httpService
           .get(`${URL}${command.deliveryNumber}?${lg}`, {
             headers: {
-              // eslint-disable-next-line prettier/prettier
               Accept: 'application/json',
               'X-Okapi-Key': OKAPI_KEY,
             },
@@ -406,7 +431,7 @@ export class CommandService {
     return mailInfos;
   }
 
-  async getTotalCommandsByDay(): Promise<any> {
+  async getTotalCommandsByMonth(): Promise<any> {
     const date = new Date();
     date.setMonth(date.getMonth() - 6);
 
